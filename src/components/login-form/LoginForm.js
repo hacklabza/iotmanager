@@ -5,8 +5,7 @@ import Form, {
   Label,
   ButtonItem,
   ButtonOptions,
-  RequiredRule,
-  EmailRule
+  RequiredRule
 } from 'devextreme-react/form';
 import LoadIndicator from 'devextreme-react/load-indicator';
 import notify from 'devextreme/ui/notify';
@@ -22,10 +21,10 @@ export default function LoginForm() {
 
   const onSubmit = useCallback(async (e) => {
     e.preventDefault();
-    const { email, password } = formData.current;
+    const { username, password } = formData.current;
     setLoading(true);
 
-    const result = await signIn(email, password);
+    const result = await signIn(username, password);
     if (!result.isOk) {
       setLoading(false);
       notify(result.message, 'error', 2000);
@@ -40,12 +39,11 @@ export default function LoginForm() {
     <form className={'login-form'} onSubmit={onSubmit}>
       <Form formData={formData.current} disabled={loading}>
         <Item
-          dataField={'email'}
+          dataField={'username'}
           editorType={'dxTextBox'}
-          editorOptions={emailEditorOptions}
+          editorOptions={usernameEditorOptions}
         >
-          <RequiredRule message="Email is required" />
-          <EmailRule message="Email is invalid" />
+          <RequiredRule message="Username is required" />
           <Label visible={false} />
         </Item>
         <Item
@@ -95,6 +93,6 @@ export default function LoginForm() {
   );
 }
 
-const emailEditorOptions = { stylingMode: 'filled', placeholder: 'Email', mode: 'email' };
+const usernameEditorOptions = { stylingMode: 'filled', placeholder: 'Username', mode: 'text' };
 const passwordEditorOptions = { stylingMode: 'filled', placeholder: 'Password', mode: 'password' };
 const rememberMeEditorOptions = { text: 'Remember me', elementAttr: { class: 'form-text' } };

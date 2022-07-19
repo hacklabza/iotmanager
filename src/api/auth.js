@@ -1,14 +1,31 @@
-import defaultUser from '../utils/default-user';
+import axios from 'axios';
 
-export async function signIn(email, password) {
+const baseAPIUrl = 'http://localhost:8000/api';
+
+export async function signIn(username, password) {
   try {
-    // Send request
-    console.log(email, password);
+    let user = null;
+    axios.post(`${baseAPIUrl}/auth/token`, { username, password }).then(
+      (response) => {
+        axios.get(`${baseAPIUrl}/users`, {
+          headers: {
+            Authorization: `Token ${response.data.token}`
+          }
+        }).then(
+          (response) => {
+            user = response.data[0];
+          }
+        );
+      }
+    );
+
+    console.log(user);
 
     return {
       isOk: true,
-      data: defaultUser
+      data: user
     };
+
   }
   catch {
     return {
@@ -24,7 +41,7 @@ export async function getUser() {
 
     return {
       isOk: true,
-      data: defaultUser
+      data: null
     };
   }
   catch {
