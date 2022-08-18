@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import DataGrid, {
   Column,
   Editing,
@@ -10,106 +10,41 @@ import DataGrid, {
   SearchPanel,
 } from 'devextreme-react/data-grid';
 import 'devextreme-react/text-area';
+import CustomStore from 'devextreme/data/custom_store';
 import { Item } from 'devextreme-react/form';
 import { useAuth } from '../../contexts/auth';
+import {
+  list as getDeviceList,
+  create as createDevice,
+  update as updateDevice,
+  remove as removeDevice
+} from '../../api/device';
 import './DeviceGrid.scss';
 
 
-export default function DeviceGrid({ menuMode }) {
+export default function DeviceGrid() {
   const { user } = useAuth();
+
+  const deviceStore = new CustomStore({
+    key: 'id',
+    load: (loadOptions) => {
+      return getDeviceList(user.token);
+    },
+    insert: (values) => {
+      return createDevice(user.token, values);
+    },
+    update: (key, values) => {
+      return updateDevice(user.token, key, values);
+    },
+    remove: (key) => {
+      return removeDevice(user.token, key);
+    }
+  });
+
 
   return (
     <DataGrid
-      dataSource={[
-        {
-          "id": "2324d938-2fdf-47c6-8b81-21d2c14839fd",
-          "created_at": "2022-04-28T19:22:30.054753+02:00",
-          "updated_at": "2022-07-20T20:28:27.999301+02:00",
-          "active": true,
-          "name": "Automated Irrigation System",
-          "description": "Automated Irrigation System - Food Garden",
-          "ip_address": "192.168.50.151",
-          "mac_address": "84:F3:EB:B9:B8:47",
-          "hostname": "qoda-iotdevice-irrigation",
-          "config": {
-            "main": {
-              "identifier": "2324d938-2fdf-47c6-8b81-21d2c14839fd",
-              "process_interval": 15,
-              "webrepl_password": "ae3200ef1"
-            },
-            "mqtt": {
-              "host": "192.168.50.103",
-              "lastwill": {
-                "msg": "Device disconnected from MQTT",
-                "topic": "iot-devices/2324d938-2fdf-47c6-8b81-21d2c14839fd/logs"
-              },
-              "password": null,
-              "username": null,
-              "client_id": "2324d938-2fdf-47c6-8b81-21d2c14839fd",
-              "keepalive": 3600,
-              "ssl_enabled": false
-            },
-            "time": {
-              "server": "za.pool.ntp.org"
-            },
-            "wifi": {
-              "essid": "qoda-extender-2.4GHz",
-              "password": "bef23991DaEe411Ac",
-              "retry_count": 10
-            },
-            "health": {
-              "url": "http://192.168.50.118:8000/health"
-            },
-            "logging": {
-              "level": "warning"
-            }
-          }
-        },
-        {
-          "id": "9263bc03-f7cb-4ca1-9d31-485482ef0232",
-          "created_at": "2022-04-28T19:22:30.054753+02:00",
-          "updated_at": "2022-07-20T20:28:27.999301+02:00",
-          "active": true,
-          "name": "Weather Station",
-          "description": "Weather Station - Patio",
-          "ip_address": "192.168.50.152",
-          "mac_address": "67:E6:EB:F9:B1:A9",
-          "hostname": "qoda-iotdevice-weather",
-          "config": {
-            "main": {
-              "identifier": "9263bc03-f7cb-4ca1-9d31-485482ef0232",
-              "process_interval": 15,
-              "webrepl_password": "ae3200ef1"
-            },
-            "mqtt": {
-              "host": "192.168.50.103",
-              "lastwill": {
-                "msg": "Device disconnected from MQTT",
-                "topic": "iot-devices/9263bc03-f7cb-4ca1-9d31-485482ef0232/logs"
-              },
-              "password": null,
-              "username": null,
-              "client_id": "9263bc03-f7cb-4ca1-9d31-485482ef0232",
-              "keepalive": 3600,
-              "ssl_enabled": false
-            },
-            "time": {
-              "server": "za.pool.ntp.org"
-            },
-            "wifi": {
-              "essid": "qoda-extender-2.4GHz",
-              "password": "bef23991DaEe411Ac",
-              "retry_count": 10
-            },
-            "health": {
-              "url": "http://192.168.50.118:8000/health"
-            },
-            "logging": {
-              "level": "warning"
-            }
-          }
-        }
-      ]}
+      dataSource={deviceStore}
       className={'dx-card wide-card'}
       showBorders={false}
       columnAutoWidth={true}
@@ -123,7 +58,7 @@ export default function DeviceGrid({ menuMode }) {
         allowUpdating={true}
         allowAdding={true}
         allowDeleting={true}>
-        <Popup title="Device Info" showTitle={true} width={700} height={525} />
+        <Popup title="Device" showTitle={true} width={700} height={525} />
         <Form>
           <Item itemType="group" colCount={2} colSpan={2}>
             <Item dataField="name" colSpan={2} />
