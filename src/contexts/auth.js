@@ -1,18 +1,17 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { getUser, signIn as sendSignInRequest } from '../api/auth';
+import { signIn as sendSignInRequest } from '../api/auth';
+import { useLocalStorage } from '../utils/state';
 
 
 function AuthProvider(props) {
-  const [user, setUser] = useState();
+  const [user, setUser] = useLocalStorage('user');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async function () {
-      const result = await getUser();
-      if (result.isOk) {
-        setUser(result.data);
+      if (user) {
+        setUser(user);
       }
-
       setLoading(false);
     })();
   }, []);
@@ -22,12 +21,11 @@ function AuthProvider(props) {
     if (result.isOk) {
       setUser(result.data);
     }
-
     return result;
   }, []);
 
   const signOut = useCallback(() => {
-    setUser(undefined);
+    setUser(null);
   }, []);
 
 

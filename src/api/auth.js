@@ -1,52 +1,34 @@
 import axios from 'axios';
 
-const baseAPIUrl = 'http://localhost:8000/api';
+const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export async function signIn(username, password) {
   try {
-    let user = null;
-    axios.post(`${baseAPIUrl}/auth/token`, { username, password }).then(
+    return axios.post(`${apiBaseUrl}/auth/token/`, { username, password }).then(
       (response) => {
-        axios.get(`${baseAPIUrl}/users`, {
+        const token = response.data.token;
+        return axios.get(`${apiBaseUrl}/users/${response.data.user_id}/`, {
           headers: {
-            Authorization: `Token ${response.data.token}`
+            Authorization: `Token ${token}`
           }
         }).then(
           (response) => {
-            user = response.data[0];
+            const user = response.data;
+            user.token = token
+            return {
+              isOk: true,
+              data: user
+            };
           }
         );
       }
     );
-
-    console.log(user);
-
-    return {
-      isOk: true,
-      data: user
-    };
 
   }
   catch {
     return {
       isOk: false,
       message: "Authentication failed"
-    };
-  }
-}
-
-export async function getUser() {
-  try {
-    // Send request
-
-    return {
-      isOk: true,
-      data: null
-    };
-  }
-  catch {
-    return {
-      isOk: false
     };
   }
 }

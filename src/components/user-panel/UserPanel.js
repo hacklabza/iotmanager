@@ -8,35 +8,26 @@ import './UserPanel.scss';
 
 export default function UserPanel({ menuMode }) {
   const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  function navigateToProfile() {
-    navigate("/profile");
-  }
   const menuItems = useMemo(() => ([
-    {
-      text: 'Profile',
-      icon: 'user',
-      onClick: navigateToProfile
-    },
     {
       text: 'Logout',
       icon: 'runner',
       onClick: signOut
     }
   ]), [signOut]);
+
   return (
     <div className={'user-panel'}>
       <div className={'user-info'}>
         <div className={'image-container'}>
           <div
             style={{
-              background: `url(${user.avatarUrl}) no-repeat #fff`,
+              background: `url(https://ui-avatars.com/api/?name=${user.username}&background=FFF&color=363640) no-repeat #fff`,
               backgroundSize: 'cover'
             }}
             className={'user-image'} />
         </div>
-        <div className={'user-name'}>{user.email}</div>
+        <div className={'user-name'}>{user.username}</div>
       </div>
 
       {menuMode === 'context' && (
