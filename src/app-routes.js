@@ -1,18 +1,10 @@
-import { HomePage, TasksPage, ProfilePage } from './pages';
+import { DevicePage } from './pages';
 import { withNavigationWatcher } from './contexts/navigation';
 
 const routes = [
     {
-        path: '/tasks',
-        element: TasksPage
-    },
-    {
-        path: '/profile',
-        element: ProfilePage
-    },
-    {
-        path: '/home',
-        element: HomePage
+        path: '/devices',
+        element: DevicePage
     }
 ];
 

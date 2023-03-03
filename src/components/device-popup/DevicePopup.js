@@ -22,39 +22,42 @@ import './DevicePopup.scss';
 
 
 const currentStatusContent = (currentStatusData) => {
-  const heroColourMap = ['green', 'red', 'yellow', 'blue']
+  const heroColourMap = ['blue', 'red', 'green', 'orange', 'yellow']
   return (
     <ResponsiveBox singleColumnScreen="xs sm">
       <Row ratio={1} />
 
-      <Col ratio={1} />
-      <Col ratio={1} />
-      <Col ratio={1} />
-      <Col ratio={1} />
+      {
+        Object.keys(currentStatusData).map(() => {
+          return <Col ratio={1} />
+        })
+      }
 
-      {Object.keys(currentStatusData).map((key, index) => {
-        let status = currentStatusData[key];
-        return (
-          <Item>
-            <Location
-              row={0}
-              col={index}
-              colspan={1}
-            ></Location>
-            <Location
-              row={0}
-              ratio={2}
-              col={index}
-              colspan={1}
-              screen="md"
-            ></Location>
-            <div className={"box-hero " + heroColourMap[index]}>
-              <p className="header item">{key.toUpperCase()}</p>
-              <h3>{status}</h3>
-            </div>
-          </Item>
-        );
-      })}
+      {
+        Object.keys(currentStatusData).map((key, index) => {
+          let status = currentStatusData[key];
+          return (
+            <Item>
+              <Location
+                row={0}
+                col={index}
+                colspan={1}
+              ></Location>
+              <Location
+                row={0}
+                ratio={2}
+                col={index}
+                colspan={1}
+                screen="md"
+              ></Location>
+              <div className={"box-hero " + heroColourMap[index]}>
+                <p className="header item">{key.toUpperCase()}</p>
+                <h3>{status}</h3>
+              </div>
+            </Item>
+          );
+        })
+      }
     </ResponsiveBox>
   )
 }
@@ -67,20 +70,20 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore) => {
       dataSource={deviceHistoricalStatusDataStore}
     >
       <Series
-        valueField="lightSensor"
+        valueField="humidity"
         argumentField="createdAt"
-        name="Light Sensor"
-        type="bar"/>
+        name="Humidity"
+        type="bar" />
       <Series
         valueField="temperature"
         argumentField="createdAt"
         name="Temperature"
         type="bar"/>
       <Series
-        valueField="humidity"
+        valueField="lightSensor"
         argumentField="createdAt"
-        name="Humidity"
-        type="bar" />
+        name="Light Sensor"
+        type="bar"/>
 
       <Legend verticalAlignment="bottom" horizontalAlignment="center" columnCount={3}></Legend>
     </Chart>
