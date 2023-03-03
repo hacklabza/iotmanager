@@ -1,9 +1,5 @@
 @import "../../themes/generated/variables.base.scss";
 
-.box.item {
-
-}
-
 .box-item-padded {
   padding: 30px;
   margin: 5px;
@@ -18,7 +14,6 @@
   padding: 5px;
   margin: 5px;
   border-radius: $base-border-radius;
-  background-color: $base-accent;
   text-align: center;
 
   h3 {
@@ -28,4 +23,20 @@
   h2 {
     padding: 0;
   }
+}
+
+.red {
+  background-color: #f5564a;
+}
+
+.blue {
+  background-color: #1db2f5;
+}
+
+.green {
+  background-color: #97c95c;
+}
+
+.yellow {
+  background-color: #ffc720;
 }

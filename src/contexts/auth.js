@@ -1,4 +1,10 @@
-import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  useCallback
+} from 'react';
 import { signIn as sendSignInRequest } from '../api/auth';
 import { useLocalStorage } from '../utils/state';
 
@@ -14,7 +20,7 @@ function AuthProvider(props) {
       }
       setLoading(false);
     })();
-  }, []);
+  }, [user, setUser]);
 
   const signIn = useCallback(async (email, password) => {
     const result = await sendSignInRequest(email, password);
@@ -22,15 +28,16 @@ function AuthProvider(props) {
       setUser(result.data);
     }
     return result;
-  }, []);
+  }, [setUser]);
 
   const signOut = useCallback(() => {
     setUser(null);
-  }, []);
-
+  }, [setUser]);
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, loading }} {...props} />
+    <AuthContext.Provider
+      value={{ user, signIn, signOut, loading }} {...props}
+    />
   );
 }
 

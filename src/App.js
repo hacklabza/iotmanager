@@ -5,8 +5,9 @@ import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
 import './dx-styles.scss';
 import LoadPanel from 'devextreme-react/load-panel';
-import { NavigationProvider } from './contexts/navigation';
 import { AuthProvider, useAuth } from './contexts/auth';
+import { DeviceProvider } from './contexts/device';
+import { NavigationProvider } from './contexts/navigation';
 import { useScreenSizeClass } from './utils/media-query';
 import Content from './Content';
 import UnauthenticatedContent from './UnauthenticatedContent';
@@ -32,9 +33,11 @@ export default function Root() {
     <Router>
       <AuthProvider>
         <NavigationProvider>
-          <div className={`app ${screenSizeClass}`}>
-            <App />
-          </div>
+          <DeviceProvider>
+            <div className={`app ${screenSizeClass}`}>
+              <App />
+            </div>
+          </DeviceProvider>
         </NavigationProvider>
       </AuthProvider>
     </Router>

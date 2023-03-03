@@ -16,21 +16,21 @@ const formMetric = (key, value) => {
 export const normalizeStatuses = (data) => {
   let createdAt = null;
   let statuses = null;
-  try {
+  if (data && data.last_status && data.last_status.created_at) {
     createdAt = data.last_status.created_at;
     statuses = data.last_status.status;
-  } catch {
-    return null;
+  } else {
+    return null
   }
   const currentStatuses = {}
   Object.keys(statuses).forEach((key) => {
     const status = statuses[key];
     if (typeof status === 'object') {
       Object.keys(status).forEach((nested_key) => {
-        currentStatuses[nested_key] = formMetric(nested_key, status[nested_key])
+        currentStatuses[nested_key.replace('-', ' ')] = formMetric(nested_key, status[nested_key])
       });
     } else {
-      currentStatuses[key] = formMetric(key, status)
+      currentStatuses[key.replace('-', ' ')] = formMetric(key, status)
     }
   });
   return {

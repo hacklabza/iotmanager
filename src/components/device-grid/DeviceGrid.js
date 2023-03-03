@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import {
   Button,
@@ -13,9 +13,11 @@ import {
   SearchPanel,
 } from 'devextreme-react/data-grid';
 import CustomStore from 'devextreme/data/custom_store';
+import DataSource from 'devextreme/data/data_source';
 import { Item } from 'devextreme-react/form';
 
 import { useAuth } from '../../contexts/auth';
+import { useDevice } from '../../contexts/device';
 import {
   detail as getDeviceDetail,
   list as getDeviceList,
@@ -23,15 +25,12 @@ import {
   update as updateDevice,
   remove as removeDevice
 } from '../../api/device';
-import { DevicePopup } from '../../components';
 import './DeviceGrid.scss';
 
 
 export default function DeviceGrid() {
   const { user } = useAuth();
-
-  const [isDevicePopupVisible, setDevicePopupVisibility] = React.useState(false);
-  const [currentDeviceData, setCurrentDeviceData] = React.useState(null);
+  const { setDeviceData, setShowDeviceData } = useDevice();
 
   const queryParams = null;
 
@@ -54,10 +53,14 @@ export default function DeviceGrid() {
     }
   });
 
+  const deviceDataStore = new DataSource({
+    store: deviceStore
+  })
+
   return (
     <React.Fragment>
       <DataGrid
-        dataSource={deviceStore}
+        dataSource={deviceDataStore}
         className={"dx-card wide-card"}
         showBorders={false}
         columnAutoWidth={true}
@@ -118,8 +121,8 @@ export default function DeviceGrid() {
           format="yyyy/MM/dd HH:mm"
         />
         <Column
-          dataField="active"
-          caption="Active"
+          dataField="health.status"
+          caption="Health"
         />
         <Column
           dataField="mac_address"
@@ -163,8 +166,8 @@ export default function DeviceGrid() {
             icon="chart"
             onClick={
               (event) => {
-                setDevicePopupVisibility(true);
-                setCurrentDeviceData(event.row.data);
+                setDeviceData(event.row.data);
+                setShowDeviceData(true);
               }
             }
           />
@@ -174,8 +177,6 @@ export default function DeviceGrid() {
         <Pager showPageSizeSelector={true} showInfo={true} />
 
       </DataGrid>
-
-      <DevicePopup showPopup={isDevicePopupVisible} data={currentDeviceData} onHide={() => { setDevicePopupVisibility(false) }}></DevicePopup>
 
     </React.Fragment>
   );
