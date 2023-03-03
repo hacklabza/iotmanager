@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from "react-router-dom";
 import ContextMenu, { Position } from 'devextreme-react/context-menu';
 import List from 'devextreme-react/list';
 import { useAuth } from '../../contexts/auth';

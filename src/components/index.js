@@ -4,4 +4,7 @@ export { default as LoginForm } from './login-form/LoginForm';
 export { default as ResetPasswordForm } from './reset-password-form/ResetPasswordForm';
 export { default as ChangePasswordForm } from './change-password-form/ChangePasswordForm';
 export { default as SideNavigationMenu } from './side-navigation-menu/SideNavigationMenu';
+
+// Devices
 export { default as DeviceGrid } from './device-grid/DeviceGrid';
+export { default as DevicePopup } from './device-popup/DevicePopup';

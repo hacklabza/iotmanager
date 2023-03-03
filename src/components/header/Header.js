@@ -39,7 +39,7 @@ export default function Header({ menuToggleEnabled, title, toggleMenu }) {
           </Button>
         </Item>
         <Template name={'userPanelTemplate'}>
-          <UserPanel menuMode={'list'} />
+          <UserPanel menuMode='list' />
         </Template>
       </Toolbar>
     </header>

@@ -1,0 +1,31 @@
+@import "../../themes/generated/variables.base.scss";
+
+.box.item {
+
+}
+
+.box-item-padded {
+  padding: 30px;
+  margin: 5px;
+  border-radius: $base-border-radius;
+}
+
+.box-item-blue {
+  background-color: $base-accent;
+}
+
+.box-hero {
+  padding: 5px;
+  margin: 5px;
+  border-radius: $base-border-radius;
+  background-color: $base-accent;
+  text-align: center;
+
+  h3 {
+    padding: 0;
+  }
+
+  h2 {
+    padding: 0;
+  }
+}

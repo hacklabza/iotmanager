@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { SingleCard } from './layouts';
 import { LoginForm, ResetPasswordForm, ChangePasswordForm } from './components';
