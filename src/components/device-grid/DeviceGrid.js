@@ -159,8 +159,16 @@ export default function DeviceGrid() {
         />
 
         <Column type="buttons">
-          <Button name="edit" />
-          <Button name="delete" />
+          <Button
+            text="Location"
+            icon="map"
+            onClick={
+              (event) => {
+                setDeviceData(event.row.data);
+                setShowDeviceData(true);
+              }
+            }
+          />
           <Button
             text="Detail"
             icon="chart"
@@ -171,6 +179,8 @@ export default function DeviceGrid() {
               }
             }
           />
+          <Button name="edit" />
+          <Button name="delete" />
         </Column>
 
         <Paging defaultPageSize={10} />

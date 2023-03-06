@@ -2,7 +2,7 @@ export const navigation = [
   {
     text: 'Devices',
     path: '/devices',
-    icon: 'product'
+    icon: 'toolbox'
   },
   // {
   //   text: 'Examples',

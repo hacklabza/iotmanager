@@ -8,7 +8,8 @@ const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export async function list(token, queryParams) {
   queryParams = queryParams || {
-    created_at: moment().format('YYYY-MM-DD')
+    created_at: moment().format('YYYY-MM-DD'),
+    sample_size: 4,
   }
   const queryString = handleQueryParams(queryParams);
   let path = queryString ? `devices/statuses/?${queryString}` : 'devices/statuses/'

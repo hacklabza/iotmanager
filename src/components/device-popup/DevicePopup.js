@@ -1,7 +1,11 @@
 import React from 'react';
-import moment from 'moment';
 
-import Chart, { Legend, Series } from 'devextreme-react/chart';
+import Chart, {
+  CommonSeriesSettings,
+  Legend,
+  Series,
+  Tooltip
+} from 'devextreme-react/chart';
 import Popup from 'devextreme-react/popup';
 import ResponsiveBox, {
   Row,
@@ -16,13 +20,16 @@ import Moment from 'react-moment';
 
 import { useAuth } from '../../contexts/auth';
 import { useDevice } from '../../contexts/device';
-import { normalizeStatuses } from '../../utils/normalize';
+import {
+  normalizeCurrentStatus,
+  normalizeHistoricalStatus,
+  normalizePinDisplayData
+} from '../../utils/normalize';
 import { list as getDeviceStatusList } from '../../api/device-status';
 import './DevicePopup.scss';
 
 
 const currentStatusContent = (currentStatusData) => {
-  const heroColourMap = ['blue', 'red', 'green', 'orange', 'yellow']
   return (
     <ResponsiveBox singleColumnScreen="xs sm">
       <Row ratio={1} />
@@ -35,7 +42,9 @@ const currentStatusContent = (currentStatusData) => {
 
       {
         Object.keys(currentStatusData).map((key, index) => {
-          let status = currentStatusData[key];
+          const label = currentStatusData[key].label;
+          const colour = currentStatusData[key].display.colour;
+          const status = currentStatusData[key].value;
           return (
             <Item>
               <Location
@@ -50,8 +59,8 @@ const currentStatusContent = (currentStatusData) => {
                 colspan={1}
                 screen="md"
               ></Location>
-              <div className={"box-hero " + heroColourMap[index]}>
-                <p className="header item">{key.toUpperCase()}</p>
+              <div className={"box-hero " + colour}>
+                <p className="header item">{label.toUpperCase()}</p>
                 <h3>{status}</h3>
               </div>
             </Item>
@@ -62,49 +71,67 @@ const currentStatusContent = (currentStatusData) => {
   )
 }
 
-const historicalStatusContent = (deviceHistoricalStatusDataStore) => {
+const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData) => {
+  const colourMap = {
+    blue: "#1db2f5",
+    red: "#f5564a",
+    green: "#97c95c",
+    yellow: "#ffc720",
+    orange: "#ff9800",
+  };
+
   return (
     <Chart
-      palette="Material"
       id="historicalStatusChart"
       dataSource={deviceHistoricalStatusDataStore}
     >
-      <Series
-        valueField="humidity"
-        argumentField="createdAt"
-        name="Humidity"
-        type="bar" />
-      <Series
-        valueField="temperature"
-        argumentField="createdAt"
-        name="Temperature"
-        type="bar"/>
-      <Series
-        valueField="lightSensor"
-        argumentField="createdAt"
-        name="Light Sensor"
-        type="bar"/>
+      <CommonSeriesSettings
+        argumentField="created_at"
+      />
 
-      <Legend verticalAlignment="bottom" horizontalAlignment="center" columnCount={3}></Legend>
+      {
+        Object.keys(displayData).map(key => {
+          return (
+            <Series
+              valueField={key}
+              name={displayData[key].label}
+              type="line"
+              color={colourMap[displayData[key].colour]}/>
+          )
+        })
+      }
+
+      <Legend
+        verticalAlignment="bottom"
+        horizontalAlignment="center"
+        columnCount={3}/>
+
+      <Tooltip
+        enabled={true}
+        zIndex="2000"
+        customizeTooltip={(event) => {
+          return { text: `${event.seriesName}: ${event.originalValue.toFixed(1) }` };
+        }}/>
     </Chart>
   );
 }
 
-const renderContent = (data, deviceHistoricalStatusDataStore) => {
-  const currentStatusData = normalizeStatuses(data);
+const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
+  const displayData = normalizePinDisplayData(deviceData);
+  const currentStatusData = normalizeCurrentStatus(deviceData);
   if (currentStatusData) {
     return (
       <ScrollView height="100%" width="100%">
         <div id="statusPopupContent">
           <p className="header item float-right text-upper">
-            Updated <Moment fromNow>{currentStatusData.createdAt}</Moment>
+            Updated <Moment fromNow>{currentStatusData.created_at}</Moment>
           </p>
           <div id="currentStatusContent">
             {currentStatusContent(currentStatusData.statuses)}
           </div>
           <p></p>
           <div id="historicalStatusContent">
-            {historicalStatusContent(deviceHistoricalStatusDataStore)}
+            {historicalStatusContent(deviceHistoricalStatusDataStore, displayData)}
           </div>
         </div>
       </ScrollView>
@@ -133,14 +160,9 @@ export default function DevicePopup() {
   const deviceHistoricalStatusDataStore = new DataSource({
     store: deviceHistoricalStatusStore,
     map: (itemData) => {
-      return {
-        createdAt: moment(itemData.created_at).format('HH:mm'),
-        lightSensor: itemData.status['light-sensor'],
-        temperature: itemData.status['dht-sensor'].temperature,
-        humidity: itemData.status['dht-sensor'].humidity,
-      }
+      return normalizeHistoricalStatus(deviceData, itemData);
     }
-  })
+  });
 
   return (
     <Popup
