@@ -19,7 +19,7 @@ Simple IoT Dashboard & Device Configuration Tool
 
 ```
 
-## Testing
+## Notes
 
 ```bash
 

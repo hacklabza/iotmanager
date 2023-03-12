@@ -6,6 +6,8 @@ const formatUnit = (key, value, displayData) => {
     percentage: '%',
     celsius: 'ºC',
     fahrenheit: 'ºF',
+    millibar: 'Mbar',
+    meter: 'm',
     boolean: (value) => value > 0 ? "ON" : "OFF",
   };
 
@@ -34,22 +36,26 @@ export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
     if (typeof status === 'object') {
       Object.keys(status).forEach((nested_key) => {
         const composite_key = `${key}.${nested_key}`;
-        currentStatuses[composite_key] = {
-          label: displayData[composite_key].label,
-          display: displayData[composite_key],
-          value: appendUnit ? formatUnit(
-            composite_key, status[nested_key], displayData
-          ) : status[nested_key]
-        };
+        if (displayData[composite_key].visible) {
+          currentStatuses[composite_key] = {
+            label: displayData[composite_key].label,
+            display: displayData[composite_key],
+            value: appendUnit ? formatUnit(
+              composite_key, status[nested_key], displayData
+            ) : status[nested_key]
+          };
+        }
       });
     } else {
-      currentStatuses[key] = {
-        label: displayData[key].label,
-        display: displayData[key],
-        value: appendUnit ? formatUnit(
-          key, status, displayData
-        ) : status
-      };
+      if (displayData[key].visible) {
+        currentStatuses[key] = {
+          label: displayData[key].label,
+          display: displayData[key],
+          value: appendUnit ? formatUnit(
+            key, status, displayData
+          ) : status
+        };
+      }
     }
   });
   return currentStatuses;

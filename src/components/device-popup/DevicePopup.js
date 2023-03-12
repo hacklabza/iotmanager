@@ -167,8 +167,10 @@ export default function DevicePopup() {
   return (
     <Popup
       id="devicePopup"
-      deferRendering={true}
       title={`${deviceData ? deviceData.name : ""} Stats`}
+      width="90vw"
+      height="80vh"
+      deferRendering={true}
       showCloseButton={true}
       visible={showDeviceData}
       contentRender={() => renderContent(deviceData, deviceHistoricalStatusDataStore)}

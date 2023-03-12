@@ -1,0 +1,12 @@
+[Unit]
+Description=python http react server
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/iotmanager
+ExecStart=python3 -m http.server --bind 0.0.0.0 3000
+
+[Install]
+WantedBy=multi-user.target

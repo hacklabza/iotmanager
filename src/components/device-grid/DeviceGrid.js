@@ -15,6 +15,7 @@ import {
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 import { Item } from 'devextreme-react/form';
+import 'devextreme-react/text-area';
 
 import { useAuth } from '../../contexts/auth';
 import { useDevice } from '../../contexts/device';
@@ -67,14 +68,15 @@ export default function DeviceGrid() {
         columnHidingEnabled={true}
         filterPanel={{visible: true}}
       >
-        <SearchPanel visible={true} highlightCaseSensitive={true} width={300} />
+        <SearchPanel visible={true} highlightCaseSensitive={true} width={200} />
         <Grouping autoExpandAll={false} />
 
         <Editing
           mode="popup"
           allowUpdating={true}
           allowAdding={true}
-          allowDeleting={true}>
+          allowDeleting={true}
+        >
           <Popup title="Device" showTitle={true} width="80vw" height="90vh" />
           <Form>
             <Item itemType="group" colCount={2} colSpan={2}>
@@ -109,6 +111,7 @@ export default function DeviceGrid() {
         <Column
           dataField="description"
           caption="Description"
+          editorType="TextArea"
         />
         <Column
           dataField="ip_address"
@@ -159,16 +162,6 @@ export default function DeviceGrid() {
         />
 
         <Column type="buttons">
-          <Button
-            text="Location"
-            icon="map"
-            onClick={
-              (event) => {
-                setDeviceData(event.row.data);
-                setShowDeviceData(true);
-              }
-            }
-          />
           <Button
             text="Detail"
             icon="chart"
