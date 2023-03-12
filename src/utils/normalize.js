@@ -24,19 +24,24 @@ const formatUnit = (key, value, displayData) => {
 export const normalizePinDisplayData = (deviceData) => {
   const displayData = {};
   deviceData.pins.forEach((pin) => {
-    pin.display.forEach(display => displayData[display.value] = display)
+    pin.display.forEach(display => {
+      if (display.visible) {
+        displayData[display.value] = display
+      }
+    })
   });
   return displayData;
 };
 
 export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
-  const currentStatuses = {}
+  const currentStatuses = {};
+
   Object.keys(statuses).forEach((key) => {
     const status = statuses[key];
     if (typeof status === 'object') {
       Object.keys(status).forEach((nested_key) => {
         const composite_key = `${key}.${nested_key}`;
-        if (displayData[composite_key].visible) {
+        if (displayData[composite_key]) {
           currentStatuses[composite_key] = {
             label: displayData[composite_key].label,
             display: displayData[composite_key],
@@ -47,7 +52,7 @@ export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
         }
       });
     } else {
-      if (displayData[key].visible) {
+      if (displayData[key]) {
         currentStatuses[key] = {
           label: displayData[key].label,
           display: displayData[key],
@@ -82,7 +87,9 @@ export const normalizeHistoricalStatus = (deviceData, historicalStatus) => {
     created_at: moment(historicalStatus.created_at).format("HH:mm")
   }
   Object.keys(statuses).forEach(key => {
-    status[key] = statuses[key].value
+    if (displayData[key]) {
+      status[key] = statuses[key].value;
+    }
   });
   return status;
 };

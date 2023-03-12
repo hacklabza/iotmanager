@@ -71,7 +71,7 @@ const currentStatusContent = (currentStatusData) => {
   )
 }
 
-const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData) => {
+const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, key) => {
   const colourMap = {
     blue: "#1db2f5",
     red: "#f5564a",
@@ -89,22 +89,16 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData) =
         argumentField="created_at"
       />
 
-      {
-        Object.keys(displayData).map(key => {
-          return (
-            <Series
-              valueField={key}
-              name={displayData[key].label}
-              type="line"
-              color={colourMap[displayData[key].colour]}/>
-          )
-        })
-      }
+      <Series
+        valueField={key}
+        name={displayData[key].label}
+        type="line"
+        color={colourMap[displayData[key].colour]} />
 
       <Legend
         verticalAlignment="bottom"
         horizontalAlignment="center"
-        columnCount={3}/>
+        columnCount={1}/>
 
       <Tooltip
         enabled={true}
@@ -130,9 +124,19 @@ const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
             {currentStatusContent(currentStatusData.statuses)}
           </div>
           <p></p>
-          <div id="historicalStatusContent">
-            {historicalStatusContent(deviceHistoricalStatusDataStore, displayData)}
-          </div>
+          {
+            Object.keys(displayData).map(key => {
+              return (
+                <div id="historicalStatusContent">
+                  {
+                    historicalStatusContent(
+                      deviceHistoricalStatusDataStore, displayData, key
+                    )
+                  }
+                </div>
+              )
+            })
+          }
         </div>
       </ScrollView>
     );
