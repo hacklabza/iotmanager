@@ -1,18 +1,20 @@
 import moment from 'moment';
 
 
-const formatUnit = (key, value, displayData) => {
-  const unit_type_map = {
-    percentage: '%',
-    celsius: 'ºC',
-    fahrenheit: 'ºF',
-    millibar: 'Mbar',
-    meter: 'm',
-    boolean: (value) => value > 0 ? "ON" : "OFF",
-  };
+const UNIT_TYPE_MAP = {
+  percentage: '%',
+  celsius: 'ºC',
+  fahrenheit: 'ºF',
+  millibar: 'Mbar',
+  hectopascal: 'hPa',
+  meter: 'm',
+  boolean: (value) => value > 0 ? "ON" : "OFF",
+};
 
+
+const formatUnit = (key, value, displayData) => {
   const displayOptions = displayData[key];
-  const unit_type = unit_type_map[displayOptions.unit_of_measure];
+  const unit_type = UNIT_TYPE_MAP[displayOptions.unit_of_measure];
 
   if (typeof(unit_type) == 'function') {
     return unit_type(value);
