@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Chart, {
-  CommonSeriesSettings,
   Legend,
+  Point,
   Series,
   Tooltip
 } from 'devextreme-react/chart';
@@ -85,15 +85,14 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
       id="historicalStatusChart"
       dataSource={deviceHistoricalStatusDataStore}
     >
-      <CommonSeriesSettings
-        argumentField="created_at"
-      />
-
       <Series
+        argumentField="created_at"
         valueField={key}
         name={displayData[key].label}
         type="line"
-        color={colourMap[displayData[key].colour]} />
+        color={colourMap[displayData[key].colour]}>
+        <Point visible={false} />
+      </Series>
 
       <Legend
         verticalAlignment="bottom"
@@ -104,7 +103,7 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
         enabled={true}
         zIndex="2000"
         customizeTooltip={(event) => {
-          return { text: `${event.seriesName}: ${event.originalValue.toFixed(1) }` };
+          return { text: event.originalValue.toFixed(1) };
         }}/>
     </Chart>
   );

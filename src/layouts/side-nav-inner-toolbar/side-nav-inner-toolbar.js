@@ -1,16 +1,16 @@
+import React, { useState, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router';
+
 import Button from 'devextreme-react/button';
 import Drawer from 'devextreme-react/drawer';
 import ScrollView from 'devextreme-react/scroll-view';
 import Toolbar, { Item } from 'devextreme-react/toolbar';
-import React, { useState, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { Template } from 'devextreme-react/core/template';
+
 import { Header, SideNavigationMenu, Footer } from '../../components';
 import './side-nav-inner-toolbar.scss';
 import { useScreenSize } from '../../utils/media-query';
-import { Template } from 'devextreme-react/core/template';
 import { useMenuPatch } from '../../utils/patches';
-
-
 
 
 export default function SideNavInnerToolbar({ title, children }) {
