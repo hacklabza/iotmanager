@@ -1,5 +1,5 @@
 const appInfo = {
-    title: 'Iot Manager'
+    title: 'IoT Manager'
 };
 export default appInfo;
 
