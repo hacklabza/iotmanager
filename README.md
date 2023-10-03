@@ -10,19 +10,13 @@ Simple IoT Dashboard & Device Configuration Tool
 ## Installation
 
 ```bash
-
+git clone https://github.com/hacklabza/iotmanager.git
+cd iotmanager/
+npm install
 ```
 
 ### Run the server to test your installation
 
 ```bash
-
+npm run start
 ```
-
-## Notes
-
-```bash
-
-```
-
-## Getting Started

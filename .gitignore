@@ -26,3 +26,7 @@ yarn-error.log*
 # env
 .env.development
 .env.production
+
+# npm
+package-lock.json
+yarn.lock

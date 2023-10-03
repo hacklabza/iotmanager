@@ -119,6 +119,9 @@ const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
           <p className="header item float-right text-upper">
             Updated <Moment fromNow>{currentStatusData.created_at}</Moment>
           </p>
+          <p className="header item float-right text-upper">
+            Some switch
+          </p>
           <div id="currentStatusContent">
             {currentStatusContent(currentStatusData.statuses)}
           </div>
