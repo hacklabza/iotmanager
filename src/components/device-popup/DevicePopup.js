@@ -44,6 +44,7 @@ const currentStatusContent = (currentStatusData) => {
         Object.keys(currentStatusData).map((key, index) => {
           const label = currentStatusData[key].label;
           const colour = currentStatusData[key].display.colour;
+          const icon = currentStatusData[key].icon;
           const status = currentStatusData[key].value;
           return (
             <Item>
@@ -60,7 +61,8 @@ const currentStatusContent = (currentStatusData) => {
                 screen="md"
               ></Location>
               <div className={"box-hero " + colour}>
-                <p className="header item">{label.toUpperCase()}</p>
+                <i className={"dx-icon-custom dx-icon-white dx-icon-" + icon + " float-left"}></i>
+                <p class="header item">{label.toUpperCase()}</p>
                 <h3>{status}</h3>
               </div>
             </Item>
@@ -112,7 +114,7 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
 const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
   const displayData = normalizePinDisplayData(deviceData);
   const currentStatusData = normalizeCurrentStatus(deviceData);
-  if (currentStatusData) {
+  if (currentStatusData && displayData) {
     return (
       <ScrollView height="100%" width="100%">
         <div id="statusPopupContent">

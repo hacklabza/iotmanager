@@ -47,6 +47,7 @@ export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
           currentStatuses[composite_key] = {
             label: displayData[composite_key].label,
             display: displayData[composite_key],
+            icon: displayData[composite_key].icon,
             value: appendUnit ? formatUnit(
               composite_key, status[nested_key], displayData
             ) : status[nested_key]
@@ -58,6 +59,7 @@ export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
         currentStatuses[key] = {
           label: displayData[key].label,
           display: displayData[key],
+          icon: displayData[key].icon,
           value: appendUnit ? formatUnit(
             key, status, displayData
           ) : status
