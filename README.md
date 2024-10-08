@@ -20,3 +20,22 @@ npm install
 ```bash
 npm run start
 ```
+
+## Deployment
+
+```bash
+npm run build
+
+# Copy to server
+scp -r build/* user@server:/home/pi/iotmanager/
+scp -r systemd/* user@server:/home/pi/iotmanager/systemd/
+```
+
+### Run the server from supervisor
+
+```bash
+ssh user@server
+sudo cp systemd/iot.manager.service /etc/systemd/system/iot.manager.service
+sudo systemctl start iot.manager.service
+sudo systemctl enable iot.manager.service
+```
