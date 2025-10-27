@@ -13,6 +13,7 @@ Simple IoT Dashboard & Device Configuration Tool
 git clone https://github.com/hacklabza/iotmanager.git
 cd iotmanager/
 npm install
+cp .env.example .env.developement
 ```
 
 ### Run the server to test your installation
@@ -24,6 +25,10 @@ npm run start
 ## Deployment
 
 ```bash
+# Copy the environment file for production build
+cp .env.example .env.production
+
+# Build the project
 npm run build
 
 # Copy to server
