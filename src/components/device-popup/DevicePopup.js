@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 
 import Chart, {
   Legend,
@@ -30,30 +30,50 @@ import './DevicePopup.scss';
 
 
 const currentStatusContent = (currentStatusData) => {
+  const statuses = currentStatusData.statuses;
+  const aggregations = currentStatusData.aggregations;
   return (
     <ResponsiveBox singleColumnScreen="xs sm">
       <Row ratio={1} />
 
       {
-        Object.keys(currentStatusData).map(() => {
-          return <Col ratio={1} />
+        Object.keys(statuses).map((key, index) => {
+          return <Col key={`col-${key}`} ratio={1} />
         })
       }
 
       {
-        Object.keys(currentStatusData).map((key, index) => {
-          const label = currentStatusData[key].label;
-          const colour = currentStatusData[key].display.colour;
-          const icon = currentStatusData[key].icon;
-          const status = currentStatusData[key].value;
+        Object.keys(statuses).map((key, index) => {
+          const label = statuses[key].label;
+          const colour = statuses[key].display.colour;
+          const icon = statuses[key].icon;
+          const status = statuses[key].value;
+
+          const aggregation_minimum = aggregations[key].minimum.value;
+          const aggregation_maximum = aggregations[key].maximum.value;
+          const aggregation_average = aggregations[key].average.value;
           return (
-            <Item>
-              <Location row={0} col={index} colspan={1}></Location>
-              <Location row={0} ratio={2} col={index} colspan={1}></Location>
+            <Item key={key}>
+              <Location row={0} col={index}></Location>
               <div className={"box-hero " + colour}>
                 <i className={"dx-icon-custom dx-icon-white dx-icon-" + icon + " float-left"}></i>
                 <p className={"header item"}>{label.toUpperCase()}</p>
                 <h3>{status}</h3>
+
+                <div className="aggregations-container">
+                  <div className="aggregation-item">
+                    <div className="aggregation-header">MIN</div>
+                    <div className="aggregation-value">{aggregation_minimum || 'N/A'}</div>
+                  </div>
+                  <div className="aggregation-item">
+                    <div className="aggregation-header">MAX</div>
+                    <div className="aggregation-value">{aggregation_maximum || 'N/A'}</div>
+                  </div>
+                  <div className="aggregation-item">
+                    <div className="aggregation-header">AVG</div>
+                    <div className="aggregation-value">{aggregation_average || 'N/A'}</div>
+                  </div>
+                </div>
               </div>
             </Item>
           );
@@ -113,17 +133,14 @@ const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
           <p className="header item float-right text-upper">
             Updated <Moment fromNow>{currentStatusData.created_at}</Moment>
           </p>
-          <p className="header item float-right text-upper">
-            Some switch
-          </p>
           <div id="currentStatusContent">
-            {currentStatusContent(currentStatusData.statuses)}
+            {currentStatusContent(currentStatusData)}
           </div>
           <p></p>
           {
             Object.keys(displayData).map(key => {
               return (
-                <div id="historicalStatusContent">
+                <div key={`historicalStatusContent${key}`}>
                   {
                     historicalStatusContent(
                       deviceHistoricalStatusDataStore, displayData, key
@@ -150,19 +167,25 @@ export default function DevicePopup() {
 
   const queryParams = null;
 
-  const deviceHistoricalStatusStore = new CustomStore({
+  // Memoize the stores to prevent unnecessary recreations
+  const deviceHistoricalStatusStore = useMemo(() => new CustomStore({
     key: 'id',
     load: (loadOptions) => {
-      return getDeviceStatusList(user.token, queryParams);
+      return getDeviceStatusList(user?.token, queryParams);
     }
-  });
+  }), [user?.token, queryParams]);
 
-  const deviceHistoricalStatusDataStore = new DataSource({
-    store: deviceHistoricalStatusStore,
-    map: (itemData) => {
-      return normalizeHistoricalStatus(deviceData, itemData);
+  const deviceHistoricalStatusDataStore = useMemo(() => {
+    if (!deviceData || !deviceHistoricalStatusStore) {
+      return null;
     }
-  });
+    return new DataSource({
+      store: deviceHistoricalStatusStore,
+      map: (itemData) => {
+        return normalizeHistoricalStatus(deviceData, itemData);
+      }
+    });
+  }, [deviceHistoricalStatusStore, deviceData]);
 
   return (
     <Popup

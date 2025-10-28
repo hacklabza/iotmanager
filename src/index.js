@@ -5,6 +5,28 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Suppress ResizeObserver loop completed errors
+const resizeObserverErrorHandler = (e) => {
+  if (e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+      e.message === 'ResizeObserver loop limit exceeded') {
+    return true;
+  }
+  return false;
+};
+
+window.addEventListener('error', (e) => {
+  if (resizeObserverErrorHandler(e)) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  if (e.reason && resizeObserverErrorHandler(e.reason)) {
+    e.preventDefault();
+  }
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
