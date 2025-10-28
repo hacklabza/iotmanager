@@ -23,6 +23,11 @@ const formatUnit = (key, value, displayData) => {
   }
 };
 
+const normaliseDateInterval = (date) => {
+  const rounded = Math.round(moment(date).minute() / 15) * 15;
+  return moment(date).minute(rounded).second(0).format("HH:mm");
+}
+
 export const normalizePinDisplayData = (deviceData) => {
   const displayData = {};
   deviceData.pins.forEach((pin) => {
@@ -128,7 +133,7 @@ export const normalizeHistoricalStatus = (deviceData, historicalStatus) => {
   const displayData = normalizePinDisplayData(deviceData);
   const statuses = normalizeStatus(historicalStatus.status, displayData, false);
   const status = {
-    created_at: moment(historicalStatus.created_at).format("HH:mm")
+    created_at: normaliseDateInterval(moment(historicalStatus.created_at))
   }
   Object.keys(statuses).forEach(key => {
     if (displayData[key]) {

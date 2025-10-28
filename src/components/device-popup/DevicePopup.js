@@ -66,12 +66,12 @@ const currentStatusContent = (currentStatusData) => {
                     <div className="aggregation-value">{aggregation_minimum || 'N/A'}</div>
                   </div>
                   <div className="aggregation-item">
-                    <div className="aggregation-header">MAX</div>
-                    <div className="aggregation-value">{aggregation_maximum || 'N/A'}</div>
-                  </div>
-                  <div className="aggregation-item">
                     <div className="aggregation-header">AVG</div>
                     <div className="aggregation-value">{aggregation_average || 'N/A'}</div>
+                  </div>
+                  <div className="aggregation-item">
+                    <div className="aggregation-header">MAX</div>
+                    <div className="aggregation-value">{aggregation_maximum || 'N/A'}</div>
                   </div>
                 </div>
               </div>
