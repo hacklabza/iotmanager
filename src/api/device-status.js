@@ -8,7 +8,7 @@ const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export async function list(token, queryParams) {
   queryParams = queryParams || {
-    created_at: moment().format('YYYY-MM-DD'),
+    start_date: moment().subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss'),
     sample_size: 5,
   }
   const queryString = handleQueryParams(queryParams);

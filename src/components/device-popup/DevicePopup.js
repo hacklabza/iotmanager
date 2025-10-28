@@ -48,21 +48,11 @@ const currentStatusContent = (currentStatusData) => {
           const status = currentStatusData[key].value;
           return (
             <Item>
-              <Location
-                row={0}
-                col={index}
-                colspan={1}
-              ></Location>
-              <Location
-                row={0}
-                ratio={2}
-                col={index}
-                colspan={1}
-                screen="md"
-              ></Location>
+              <Location row={0} col={index} colspan={1}></Location>
+              <Location row={0} ratio={2} col={index} colspan={1}></Location>
               <div className={"box-hero " + colour}>
                 <i className={"dx-icon-custom dx-icon-white dx-icon-" + icon + " float-left"}></i>
-                <p class="header item">{label.toUpperCase()}</p>
+                <p className={"header item"}>{label.toUpperCase()}</p>
                 <h3>{status}</h3>
               </div>
             </Item>
@@ -80,6 +70,8 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
     green: "#97c95c",
     yellow: "#ffc720",
     orange: "#ff9800",
+    pink: "#e96a94ff",
+    purple: "#9c27b0",
   };
 
   return (

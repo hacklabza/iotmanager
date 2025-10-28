@@ -70,14 +70,54 @@ export const normalizeStatus = (statuses, displayData, appendUnit = true) => {
   return currentStatuses;
 }
 
+export const normalizeAggregations = (aggregations, displayData, appendUnit = true) => {
+  const currentAggregations = {};
+
+  Object.keys(aggregations).forEach((key) => {
+    const aggregation = aggregations[key];
+    Object.keys(aggregation).forEach((aggregation_key) => {
+      const stat = aggregation[aggregation_key];
+      if (typeof stat === 'object') {
+        const composite_key = `${key}.${aggregation_key}`;
+        currentAggregations[composite_key] = {};
+        Object.keys(stat).forEach((nested_key) => {
+          if (displayData[composite_key]) {
+            currentAggregations[composite_key][nested_key] = {
+              label: nested_key,
+              display: displayData[composite_key],
+              value: appendUnit ? formatUnit(
+                composite_key, stat[nested_key], displayData
+              ) : stat[nested_key]
+            };
+          }
+        });
+      } else {
+        currentAggregations[key] = currentAggregations[key] || {};
+        if (displayData[key]) {
+          currentAggregations[key][aggregation_key] = {
+            label: aggregation_key,
+            display: displayData[key],
+            value: appendUnit ? formatUnit(
+              key, stat, displayData
+            ) : stat
+          };
+        }
+      }
+    });
+  });
+  return currentAggregations;
+}
+
 export const normalizeCurrentStatus = (deviceData) => {
   if (deviceData && deviceData.last_status && deviceData.last_status.created_at) {
     const created_at = deviceData.last_status.created_at;
     const displayData = normalizePinDisplayData(deviceData);
     const statuses = normalizeStatus(deviceData.last_status.status, displayData);
+    const aggregations = normalizeAggregations(deviceData.aggregated_status, displayData);
     return {
       created_at,
       statuses,
+      aggregations
     };
   } else {
     return null;
