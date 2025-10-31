@@ -58,6 +58,18 @@ export default function DeviceGrid() {
     store: deviceStore
   })
 
+  const showHidePassword = (event) => {
+    // Find the actual input element
+    const textBoxElement = event.element.closest('.dx-textbox').querySelector('input');
+    const isPassword = textBoxElement.type === 'password';
+
+    // Toggle the input type directly
+    textBoxElement.type = isPassword ? 'text' : 'password';
+
+    // Update the button icon
+    event.component.option('icon', isPassword ? 'eyeclose' : 'eyeopen');
+  };
+
   return (
     <React.Fragment>
       <DataGrid
@@ -93,13 +105,45 @@ export default function DeviceGrid() {
               <Item dataField="mac_address" />
               <Item dataField="hostname" />
               <Item dataField="config.wifi.essid" />
-              <Item dataField="config.wifi.password" />
+              <Item
+                dataField="config.wifi.password"
+                editorType="dxTextBox"
+                editorOptions={{
+                  mode: "password",
+                  showClearButton: true,
+                  buttons: [{
+                    name: "password",
+                    location: "after",
+                    options: {
+                      icon: "eyeopen",
+                      type: "default",
+                      onClick: (event) => showHidePassword(event)
+                    }
+                  }]
+                }}
+              />
             </Item>
 
             <Item itemType="group" caption="MQTT" colCount={2} colSpan={2}>
               <Item dataField="config.mqtt.host" colSpan={2} />
               <Item dataField="config.mqtt.username" />
-              <Item dataField="config.mqtt.password" />
+              <Item
+                dataField="config.mqtt.password"
+                editorType="dxTextBox"
+                editorOptions={{
+                  mode: "password",
+                  showClearButton: true,
+                  buttons: [{
+                    name: "password",
+                    location: "after",
+                    options: {
+                      icon: "eyeopen",
+                      type: "default",
+                      onClick: (event) => showHidePassword(event)
+                    }
+                  }]
+                }}
+              />
             </Item>
           </Form>
         </Editing>
