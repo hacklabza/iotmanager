@@ -2,15 +2,20 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { handleQueryParams } from '../utils/query';
+import query from 'devextreme/data/query';
 
 
 const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export async function list(token, queryParams) {
-  queryParams = queryParams || {
-    start_date: moment().subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss'),
-    sample_size: 5,
-  }
+
+  // Calculate dynamic sample size based on time period
+  const start_date = moment(queryParams.start_date);
+  const end_date = moment(queryParams.end_date);
+  const hours_difference = end_date.diff(start_date, 'hours');
+  const base_sample_rate = 4 / 24;
+  queryParams.sample_size = Math.max(1, Math.round(hours_difference * base_sample_rate));
+
   const queryString = handleQueryParams(queryParams);
   let path = queryString ? `devices/statuses/?${queryString}` : 'devices/statuses/'
   return axios.get(`${apiBaseUrl}/${path}`, {

@@ -1,11 +1,15 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import moment from 'moment';
 
 import Chart, {
+  ArgumentAxis,
+  Label,
   Legend,
   Point,
   Series,
   Tooltip
 } from 'devextreme-react/chart';
+import { DateRangeBox } from 'devextreme-react/date-range-box';
 import Popup from 'devextreme-react/popup';
 import ResponsiveBox, {
   Row,
@@ -83,6 +87,23 @@ const currentStatusContent = (currentStatusData) => {
   )
 }
 
+const historicalStatusFilterContent = ({ startDate, endDate, handleDateChange }) => {
+  return (
+    <DateRangeBox
+      startDate={startDate}
+      endDate={endDate}
+      onValueChanged={
+        (event) => {
+          handleDateChange(event.value[0], event.value[1]);
+        }
+      }
+      displayFormat="yyyy-MM-dd"
+      showClearButton={true}
+      applyValueMode="useButtons"
+    />
+  );
+}
+
 const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, key) => {
   const colourMap = {
     blue: "#1db2f5",
@@ -99,6 +120,12 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
       id="historicalStatusChart"
       dataSource={deviceHistoricalStatusDataStore}
     >
+      <ArgumentAxis>
+          <Label
+              rotationAngle={45}
+              overlappingBehavior="rotate"
+          />
+      </ArgumentAxis>
       <Series
         argumentField="created_at"
         valueField={key}
@@ -123,7 +150,7 @@ const historicalStatusContent = (deviceHistoricalStatusDataStore, displayData, k
   );
 }
 
-const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
+const renderContent = (deviceData, deviceHistoricalStatusDataStore, dateFilterParams) => {
   const displayData = normalizePinDisplayData(deviceData);
   const currentStatusData = normalizeCurrentStatus(deviceData);
   if (currentStatusData && displayData) {
@@ -135,6 +162,10 @@ const renderContent = (deviceData, deviceHistoricalStatusDataStore) => {
           </p>
           <div id="currentStatusContent">
             {currentStatusContent(currentStatusData)}
+          </div>
+          <p></p>
+          <div id="historicalStatusFilterContent">
+            {historicalStatusFilterContent(dateFilterParams)}
           </div>
           <p></p>
           {
@@ -165,12 +196,20 @@ export default function DevicePopup() {
     setShowDeviceData,
   } = useDevice();
 
-  const queryParams = null;
+  // State for date range
+  const [startDate, setStartDate] = useState(moment().subtract(24, 'hours').toDate());
+  const [endDate, setEndDate] = useState(moment().toDate());
+
+  // Create queryParams with date range
+  const queryParams = useMemo(() => ({
+    start_date: moment(startDate).format('YYYY-MM-DD HH:mm:ss'),
+    end_date: moment(endDate).format('YYYY-MM-DD HH:mm:ss'),
+  }), [startDate, endDate]);
 
   // Memoize the stores to prevent unnecessary recreations
   const deviceHistoricalStatusStore = useMemo(() => new CustomStore({
     key: 'id',
-    load: (loadOptions) => {
+    load: () => {
       return getDeviceStatusList(user?.token, queryParams);
     }
   }), [user?.token, queryParams]);
@@ -187,6 +226,17 @@ export default function DevicePopup() {
     });
   }, [deviceHistoricalStatusStore, deviceData]);
 
+  const handleDateChange = useCallback((start_date, end_date) => {
+    setStartDate(start_date || moment().subtract(24, 'hours').toDate());
+    setEndDate(end_date || moment().toDate());
+  }, [deviceHistoricalStatusDataStore]);
+
+  const dateFilterParams = {
+    startDate,
+    endDate,
+    handleDateChange,
+  }
+
   return (
     <Popup
       id="devicePopup"
@@ -196,7 +246,7 @@ export default function DevicePopup() {
       deferRendering={true}
       showCloseButton={true}
       visible={showDeviceData}
-      contentRender={() => renderContent(deviceData, deviceHistoricalStatusDataStore)}
+      contentRender={() => deviceHistoricalStatusDataStore ? renderContent(deviceData, deviceHistoricalStatusDataStore, dateFilterParams) : null}
       onHiding={(event) => {
         setShowDeviceData(false);
       }}
